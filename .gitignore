@@ -217,6 +217,12 @@ __marimo__/
 # Streamlit
 .streamlit/secrets.toml
 
-# Data (large raw/processed datasets - do not commit)
+# Data (large raw dataset - do not commit; derived artifacts in
+# data/processed/ ARE committed, since the deployed app reads them at runtime)
 data/*
 !data/.gitkeep
+!data/processed/
+
+# Claude Code tooling state (not project source)
+.agents/
+.claude/
