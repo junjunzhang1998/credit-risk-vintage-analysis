@@ -71,7 +71,7 @@ Live demo: https://credit-risk-vintage-analysis.streamlit.app/
 - matplotlib
 
 ## Author
-JJ Zhang
-M.S. in Data Science, Columbia University (expected Dec 2026)
-GitHub: https://github.com/junjunzhang1998
-LinkedIn: https://www.linkedin.com/in/junjun-zhang/
+**JJ Zhang** — M.S. in Data Science, Columbia University (expected Dec 2026)
+
+- GitHub: https://github.com/junjunzhang1998
+- LinkedIn: https://www.linkedin.com/in/junjun-zhang/
