@@ -186,6 +186,10 @@ def render() -> None:
     ax.set_title(f'Loan {loan_id} vs. its cohort')
     ax.legend(fontsize=8)
     st.pyplot(fig, width=650)
+    # matplotlib's figure registry is process-global -- without an explicit
+    # close(), every lookup leaves its Figure resident for the life of the
+    # process (see the matching note in cohort_explorer.py).
+    plt.close(fig)
 
     if kmf is not None and cohort_n < 100:
         st.caption(f'Cohort comparison sample size is small (n={cohort_n:,}) -- interpret with caution.')

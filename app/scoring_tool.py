@@ -233,6 +233,10 @@ def render_result(model, input_df) -> None:
     ax.set_xlabel('SHAP contribution to raw model score (red = higher risk)')
     plt.tight_layout()
     st.pyplot(fig)
+    # matplotlib's figure registry is process-global -- without an explicit
+    # close(), every scored applicant leaves its Figure resident for the life
+    # of the process (see the matching note in cohort_explorer.py).
+    plt.close(fig)
 
     st.caption(
         "These factors explain the model's underlying risk assessment, averaged "

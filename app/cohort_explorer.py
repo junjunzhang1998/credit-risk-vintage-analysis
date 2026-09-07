@@ -3,7 +3,9 @@
 Refits a KaplanMeierFitter live against a filtered slice of the loan-level
 survival dataset saved by notebook `05_vintage_cohort_analysis.ipynb`
 (section 10), rather than only showing that notebook's fixed set of curves.
-The dataset (2.25M rows, 10 columns, ~20MB) is small enough that a full
+The dataset (2.25M rows, 29 columns -- the KM-facing columns plus the full
+Cox covariate set for the loan-lookup tab below -- ~190MB in memory after
+notebook 05_'s dtype downcast, ~47MB on disk) is small enough that a full
 load + filter + refit comfortably runs in well under a second, so no
 precomputed cohort table is needed -- only the raw load is cached.
 """
@@ -92,6 +94,13 @@ def render() -> None:
     # this figsize -- an explicit pixel width decouples the on-page size from
     # both figsize and that internal dpi.
     st.pyplot(fig, width=650)
+    # matplotlib's figure registry is process-global, not per-session -- every
+    # rerun (every radio/multiselect change) builds a new Figure via
+    # plt.subplots() above, and without an explicit close() each one stays
+    # registered for the life of the process. This tab's figure is rebuilt on
+    # every rerun (not gated behind a button like loan_lookup's), so this was
+    # the main source of unbounded memory growth over a session's lifetime.
+    plt.close(fig)
 
     if skipped:
         st.caption(f'Skipped (fewer than {MIN_COHORT_N} loans in this slice): {", ".join(map(str, skipped))}')
