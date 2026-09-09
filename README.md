@@ -18,7 +18,7 @@ This project builds an end-to-end credit risk pipeline on Lending Club's `accept
 
 **Phase 1 — static default classification.** Given a resolved loan (Fully Paid or Charged Off), predict the probability of default at origination, using only information available at the time of application.
 
-**Phase 2 — vintage/cohort survival analysis.** Default isn't just binary — it happens at a point in time, and different origination cohorts carry different risk depending on economic conditions at issuance. Kaplan-Meier curves and a Cox Proportional Hazards model quantify how default risk evolves over a loan's life, using the full population (including loans still active, as right-censored observations).
+**Phase 2 — vintage/cohort survival analysis.** Default isn't just binary — it happens at a point in time, and different origination cohorts carry different risk depending on economic conditions at issuance. Kaplan-Meier curves are fit on the full 2007-2018 origination history (including loans still active, as right-censored observations); the Cox Proportional Hazards model, used for deployment scoring, is restricted to 2013-2018 originations to match the bureau-feature schema available at those vintages. After isolating the effect from right-censoring with an explicit maturity mask, the KM analysis finds a real decline in credit quality from the 2011 vintages into the mid-2010s.
 
 **Phase 3 — deployment.** Both phases are exposed through a Streamlit dashboard: a cohort/survival explorer and a point-in-time scoring tool for new applicants.
 
@@ -38,11 +38,11 @@ Built from `loan_status`:
 - Logistic Regression — interpretable baseline
 - LightGBM — challenger model, calibrated with cross-fitted isotonic regression (`CalibratedClassifierCV`, 5-fold ensemble) to correct probability-scale miscalibration found in the uncalibrated version
 
-Evaluated on AUC, KS statistic, and calibration (decile-level predicted vs. observed default rate) rather than accuracy — the resolved-loan population is imbalanced enough that accuracy is uninformative.
+Evaluated on AUC, KS statistic, and calibration (decile-level predicted vs. observed default rate) rather than accuracy — the resolved-loan population is imbalanced enough that accuracy is uninformative. Final calibrated model: AUC ~0.70, KS ~0.29.
 
 **Phase 2 (survival):**
 - Kaplan-Meier — non-parametric baseline, fit per cohort (term × origination period × grade)
-- Cox Proportional Hazards — covariate-adjusted hazard model, used for individual-loan forward-risk scoring
+- Cox Proportional Hazards — covariate-adjusted hazard model (concordance ~0.68), used for individual-loan forward-risk scoring
 
 ## Features Used
 - Loan terms (amount, term length, purpose)
